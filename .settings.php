@@ -7,6 +7,12 @@ use Vt\Forms\Base\Fields\TextField;
 use Vt\Forms\Base\Form;
 
 return [
+    'components' => [
+        'value' => [
+            'vt:form'
+        ],
+        'readOnly' => true
+    ],
     'controllers' => [
         'value' => [
             'defaultNamespace' => 'Vt\\Forms\\Controller'

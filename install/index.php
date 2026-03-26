@@ -1,6 +1,7 @@
 <?php
 
 use Bitrix\Main\Application;
+use Bitrix\Main\IO\Directory;
 use Bitrix\Main\Loader;
 use Vt\Forms\Model\FormResultTable;
 use Vt\Forms\Model\FormResultValuesTable;
@@ -14,7 +15,7 @@ class vt_forms extends CModule
         $this->MODULE_DESCRIPTION = "Комплексный модуль для работы с ajax формами";
 
         $arModuleVersion = [];
-        include __DIR__ . '/install.php';
+        include __DIR__ . '/version.php';
 
         if (is_array($arModuleVersion) && array_key_exists('VERSION', $arModuleVersion)) {
             $this->MODULE_VERSION = $arModuleVersion['VERSION'];
@@ -87,11 +88,61 @@ class vt_forms extends CModule
 
     public function InstallFiles(): bool
     {
+        $root = Application::getDocumentRoot();
+
+        $this->processComponents(function ($source, $target) {
+            if (Directory::isDirectoryExists($source)) {
+                CopyDirFiles($source, $target, true, true);
+            }
+        });
+
         return true;
     }
 
     public function UnInstallFiles(): bool
     {
+        $root = Application::getDocumentRoot();
+
+        $this->processComponents(function ($source, $target) {
+            if (Directory::isDirectoryExists($target)) {
+                Directory::deleteDirectory($target);
+            }
+        });
+
+        $this->cleanUpVendorDirectory($root . '/local/components/vt');
+
         return true;
+    }
+
+    private function processComponents(callable $action): void
+    {
+        $root = Application::getDocumentRoot();
+        $configPath = __DIR__ . '/../.settings.php';
+
+        if (!file_exists($configPath)) {
+            return;
+        }
+
+        $settings = include($configPath);
+        $components = $settings['components']['value'] ?? [];
+
+        foreach ($components as $name) {
+            $relPath = str_replace(':', '/', $name);
+
+            $source = $root . '/local/modules/' . $this->MODULE_ID . '/install/components/' . $relPath;
+            $target = $root . '/local/components/' . $relPath;
+
+            $action($source, $target);
+        }
+    }
+
+    private function cleanUpVendorDirectory(string $path): void
+    {
+        if (Directory::isDirectoryExists($path)) {
+            $dir = new Directory($path);
+            if (empty($dir->getChildren())) {
+                $dir->delete();
+            }
+        }
     }
 }
