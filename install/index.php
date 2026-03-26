@@ -1,5 +1,10 @@
 <?php
 
+use Bitrix\Main\Application;
+use Bitrix\Main\Loader;
+use vt\forms\Model\FormResultTable;
+use vt\forms\Model\FormResultValuesTable;
+
 class vt_forms extends CModule
 {
     public function __construct()
@@ -39,11 +44,34 @@ class vt_forms extends CModule
 
     public function InstallDB(): bool
     {
+        if (!Loader::includeModule($this->MODULE_ID)) {
+            throw new \Exception('Модуль установлен некорректно');
+        }
+
+        FormResultTable::getEntity()->createDbTable();
+        FormResultValuesTable::getEntity()->createDbTable();
+
         return true;
     }
 
     public function UnInstallDB(): bool
     {
+        if (!Loader::includeModule($this->MODULE_ID)) {
+            throw new \Exception('Модуль удалён некорректно');
+        }
+
+        $connection = Application::getInstance()->getConnection();
+        $tableNames = [
+            FormResultTable::getEntity()->getDBTableName(),
+            FormResultValuesTable::getEntity()->getDBTableName(),
+        ];
+
+        foreach ($tableNames as $tableName) {
+            if ($connection->isTableExists($tableName)) {
+                $connection->dropTable($tableName);
+            }
+        }
+
         return true;
     }
 
