@@ -2,16 +2,16 @@
 
 namespace Vt\Forms\Base\Fields;
 
-use Vt\Forms\Base\DTO\FieldContext;
+use Vt\Forms\Base\Dto\FieldDto;
 
 class PhoneField extends Field
 {
     protected bool $isTextArea;
 
-    public function __construct(FieldContext $context)
+    public function __construct(FieldDto $fieldParams)
     {
-        parent::__construct($context);
-        $this->isTextArea = $context->isTextArea;
+        parent::__construct($fieldParams);
+        $this->isTextArea = $fieldParams->isTextArea;
     }
 
     public function getType(): string

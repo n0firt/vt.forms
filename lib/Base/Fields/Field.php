@@ -2,7 +2,7 @@
 
 namespace Vt\Forms\Base\Fields;
 
-use Vt\Forms\Base\DTO\FieldContext;
+use Vt\Forms\Base\Dto\FieldDto;
 
 abstract class Field
 {
@@ -10,11 +10,11 @@ abstract class Field
     protected string $label;
     protected bool $required;
 
-    public function __construct(FieldContext $context)
+    public function __construct(FieldDto $fieldParams)
     {
-        $this->code = $context->code;
-        $this->label = $context->label;
-        $this->required = $context->required;
+        $this->code = $fieldParams->code;
+        $this->label = $fieldParams->label;
+        $this->required = $fieldParams->required;
     }
 
     public function validate($value): array
