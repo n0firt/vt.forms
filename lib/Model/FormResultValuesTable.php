@@ -3,6 +3,7 @@
 namespace Vt\Forms\Model;
 
 use Bitrix\Main\ORM\Data\DataManager;
+use Bitrix\Main\ORM\Fields\Relations\Reference;
 use Bitrix\Main\ORM\Fields\IntegerField;
 use Bitrix\Main\ORM\Fields\StringField;
 
@@ -29,6 +30,7 @@ class FormResultValuesTable extends DataManager
                     'required' => true,
                 ]
             ),
+            new Reference('RESULT', FormResultTable::class, ['=this.RESULT_ID' => 'ref.ID']),
             new StringField(
                 'CODE',
                 [

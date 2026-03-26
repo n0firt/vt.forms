@@ -62,8 +62,8 @@
         const label = el.querySelector("label").innerText;
 
         if (
-          field &&
-          field.classList.contains("js-required") &&
+          el &&
+          el.classList.contains("js-required") &&
           (!data[field.name] || data[field.name].trim() === "")
         ) {
           showFieldError(el, `Поле "${label}" обязательно для заполнения`);
@@ -72,9 +72,9 @@
         }
 
         if (
-          field &&
+          el &&
           data[field.name] &&
-          field.classList.contains("form__field-phone") &&
+          el.classList.contains("form__field-phone") &&
           !/\+7 \d{3} \d{3} \d{2} \d{2}/.test(data[field.name])
         ) {
           showFieldError(
@@ -86,9 +86,9 @@
         }
 
         if (
-          field &&
+          el &&
           data[field.name] &&
-          field.classList.contains("form__field-email") &&
+          el.classList.contains("form__field-email") &&
           !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
             data[field.name],
           )

@@ -3,6 +3,8 @@
 namespace Vt\Forms\Base;
 
 use Vt\Forms\Base\Fields\Field;
+use Vt\Forms\Model\FormResultTable;
+use Vt\Forms\Model\FormResultValuesTable;
 
 class Form
 {
@@ -17,7 +19,32 @@ class Form
 
     public function addResult(array $values): bool
     {
-        new \Exception('Not implemented');
+        $result = FormResultTable::add([
+            'FORM_ID' => $this->id,
+            'IP' => $_SERVER['REMOTE_ADDR'],
+            'USER_AGENT' => $_SERVER['HTTP_USER_AGENT'],
+        ]);
+
+        if ($result->isSuccess() === false) {
+            return false;
+        }
+
+        $id = $result->getId();
+
+        foreach ($this->fields as $field) {
+            $value = $values[$field->getCode()];
+
+            if ($value === null) {
+                continue;
+            }
+
+            FormResultValuesTable::add([
+                'RESULT_ID' => $id,
+                'CODE' => $field->getCode(),
+                'LABEL' => $field->getLabel(),
+                'VALUE' => $value,
+            ]);
+        }
 
         return true;
     }

@@ -7,6 +7,7 @@ use Bitrix\Main\Engine\ActionFilter\Csrf;
 use Bitrix\Main\Engine\ActionFilter\HttpMethod;
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Text\HtmlFilter;
+use Vt\Forms\Exception\BaseException;
 
 class FormResult extends Controller
 {
@@ -49,6 +50,12 @@ class FormResult extends Controller
                 }
             }
         }
+
+        if (!empty($this->getErrors())) {
+            return null;
+        }
+
+        $form->addResult($values);
 
         return null;
     }
