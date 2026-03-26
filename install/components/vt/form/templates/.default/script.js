@@ -28,7 +28,7 @@
       clearErrors();
       const values = getData();
 
-      if (!validate(values)) {
+      if (validate(values) === false) {
         return;
       }
 

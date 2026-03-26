@@ -43,7 +43,8 @@ class Form
 
             foreach ($this->fields as $field) {
                 $code = $field->getCode();
-                $value = $values[$code] ?? null;
+                $label = $field->getLabel();
+                $value = $values[$code];
 
                 if (empty($value) && $field->isRequired() === false) {
                     continue;
@@ -52,19 +53,19 @@ class Form
                 $resValue = FormResultValuesTable::add([
                     'RESULT_ID' => $id,
                     'CODE' => $code,
-                    'LABEL' => $field->getLabel(),
+                    'LABEL' => $label,
                     'VALUE' => (string)$value,
                 ]);
 
                 if ($resValue->isSuccess() === false) {
                     throw new FormResultSavingException(implode(', ', $result->getErrorMessages()));
                 }
-
-                $connection->commitTransaction();
-
-                return true;
             }
-        } catch (FormResultValuesTable $exception) {
+
+            $connection->commitTransaction();
+
+            return true;
+        } catch (FormResultSavingException $exception) {
             $connection->rollbackTransaction();
             throw $exception;
         }
