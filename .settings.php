@@ -50,8 +50,8 @@ return [
                             ),
                             new TextField(
                                 new FieldDto(
-                                    'message',
-                                    'Сообщение',
+                                    'MESSAGE',
+                                    'Комментарий',
                                     isTextArea: true
                                 )
                             )
