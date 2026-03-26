@@ -12,7 +12,7 @@ foreach ($arResult['FIELDS'] as &$field) {
             '<div class="form__field %s">
                 <label class="form__field-label" for="%s">%s</label>
                 <textarea class="form__field-input" id="%2$s" name="%2$s"></textarea>
-                <div class="form__error"></div>
+                <div class="field__error"></div>
             </div>',
             $requiredClass,
             $field['CODE'],
@@ -20,15 +20,15 @@ foreach ($arResult['FIELDS'] as &$field) {
         ),
 
         'text', 'phone', 'email' => sprintf(
-            '<div class="form__field %s">
+            '<div class="form__field form__field-%s %s">
                 <label class="form__field-label" for="%s">%s</label>
-                <input class="form__field-input" type="%s" id="%2$s" name="%2$s">
-                <div class="form__error"></div>
+                <input class="form__field-input" id="%3$s" name="%3$s">
+                <div class="field__error"></div>
             </div>',
+            $field['TYPE'],
             $requiredClass,
             $field['CODE'],
             $field['LABEL'],
-            $field['TYPE']
         ),
 
         default => "",

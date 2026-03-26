@@ -32,7 +32,7 @@ return [
                                 new FieldDto(
                                     'NAME',
                                     'Имя',
-                                    true
+                                    false
                                 )
                             ),
                             new PhoneField(
@@ -45,13 +45,15 @@ return [
                             new EmailField(
                                 new FieldDto(
                                     'EMAIL',
-                                    'Email'
+                                    'Email',
+                                    true
                                 )
                             ),
                             new TextField(
                                 new FieldDto(
                                     'MESSAGE',
                                     'Комментарий',
+                                    true,
                                     isTextArea: true
                                 )
                             )

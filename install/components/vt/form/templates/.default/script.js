@@ -26,22 +26,24 @@
     const send = async (event) => {
       event.preventDefault();
       clearErrors();
-      const data = getData();
+      const values = getData();
 
-      if (!validate(data)) {
+      if (!validate(values)) {
         return;
       }
 
       try {
         const response = await BX.ajax.runAction("vt:forms.formResult.add", {
-          data: { formId: state.formId, fields: data },
+          data: { formId: state.apiFormId, values },
         });
 
         if (response.status === "success") {
-          /*************/
+          showSuccess();
         }
       } catch (e) {
-        /*************/
+        showFormError(
+          e?.errors?.[0]?.message || e.message || "Неизвестная ошибка",
+        );
       }
     };
 
@@ -53,25 +55,47 @@
     const validate = (data) => {
       let valid = true;
 
-      form.querySelectorAll(".js-required").forEach((el) => {
+      state.form.querySelectorAll(".form__field").forEach((el) => {
         if (!el) return;
 
         const field = el.querySelector("input, textarea");
         const label = el.querySelector("label").innerText;
 
-        if (field && (!data[field.name] || data[field.name].trim() === "")) {
+        if (
+          field &&
+          field.classList.contains("js-required") &&
+          (!data[field.name] || data[field.name].trim() === "")
+        ) {
           showFieldError(el, `Поле "${label}" обязательно для заполнения`);
           valid = valid && false;
           return;
         }
 
         if (
-          field.name === "PHONE" &&
+          field &&
+          data[field.name] &&
+          field.classList.contains("form__field-phone") &&
           !/\+7 \d{3} \d{3} \d{2} \d{2}/.test(data[field.name])
         ) {
           showFieldError(
             el,
-            `Поле "${label}" должно быть в формате +7 XXX XXX XX XX`,
+            `Поле "${label}" должно быть заполнено в формате +7 XXX XXX XX XX`,
+          );
+          valid = valid && false;
+          return;
+        }
+
+        if (
+          field &&
+          data[field.name] &&
+          field.classList.contains("form__field-email") &&
+          !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(
+            data[field.name],
+          )
+        ) {
+          showFieldError(
+            el,
+            `Поле "${label}" должно быть заполнено в формате email@example.com`,
           );
           valid = valid && false;
           return;
@@ -82,49 +106,49 @@
     };
 
     const applyMask = () => {
-      form.querySelectorAll('input[type="phone"]').forEach((input) => {
-        new BX.MaskedInput({
-          mask: "+7 999 999 99 99",
-          input,
-          placeholder: "_",
+      state.form
+        .querySelectorAll(".form__field-phone input")
+        .forEach((input) => {
+          new BX.MaskedInput({
+            mask: "+7 999 999 99 99",
+            input,
+            placeholder: "_",
+          });
         });
-      });
     };
 
     const resetForm = () => {
-      /*************/
+      state.form.reset();
+      hideSuccess();
     };
 
     const showFieldError = (input, message) => {
       input.closest(".form__field").classList.add("invalid");
-      input.closest(".form__field").querySelector(".form__error").innerText =
+      input.closest(".form__field").querySelector(".field__error").innerText =
         message;
     };
 
     const showFormError = (message) => {
-      const error = form.querySelector(".form__error");
+      const error = state.form.querySelector(".form__error");
       error.innerText = message;
     };
 
     const clearErrors = () => {
-      form
-        .querySelectorAll(".form__error")
+      state.form
+        .querySelectorAll(".field__error")
         .forEach((el) => (el.innerText = ""));
-      form
-        .querySelectorAll(".form__input.invalid")
+      state.form
+        .querySelectorAll(".form__field.invalid")
         .forEach((el) => el.classList.remove("invalid"));
+      state.form.querySelector(".form__error").innerText = "";
     };
 
     const showSuccess = () => {
-      const success = form
-        .querySelector(".form__success")
-        .classlist.add("open");
+      state.form.querySelector(".form__success").classList.add("open");
     };
 
     const hideSuccess = () => {
-      const success = form
-        .querySelector(".form__success")
-        .classlist.remove("open");
+      state.form.querySelector(".form__success").classList.remove("open");
     };
 
     init();

@@ -8,7 +8,7 @@ class EmailField extends Field
     {
         $errors = parent::validate($value);
 
-        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if (!empty($value) && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Поле «{$this->label}» заполнено некорректно.";
         }
 

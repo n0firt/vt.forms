@@ -140,7 +140,8 @@ textarea.form__field-input {
   user-select: none;
 }
 
-.form__error {
+.form__error,
+.field__error {
   font-size: 0.5em;
   text-align: right;
   height: 15px;
