@@ -2,7 +2,10 @@
 
 namespace Vt\Forms\Base;
 
+use Bitrix\Main\Application;
+use Bitrix\Main\Context;
 use Vt\Forms\Base\Fields\Field;
+use Vt\Forms\Exception\FormResultSavingException;
 use Vt\Forms\Model\FormResultTable;
 use Vt\Forms\Model\FormResultValuesTable;
 
@@ -19,34 +22,54 @@ class Form
 
     public function addResult(array $values): bool
     {
-        $result = FormResultTable::add([
-            'FORM_ID' => $this->id,
-            'IP' => $_SERVER['REMOTE_ADDR'],
-            'USER_AGENT' => $_SERVER['HTTP_USER_AGENT'],
-        ]);
+        $connection = Application::getConnection();
+        $request = Context::getCurrent()->getRequest();
 
-        if ($result->isSuccess() === false) {
-            return false;
-        }
+        $connection->startTransaction();
 
-        $id = $result->getId();
+        try {
 
-        foreach ($this->fields as $field) {
-            $value = $values[$field->getCode()];
+            $result = FormResultTable::add([
+                'FORM_ID' => $this->id,
+                'IP' => $request->getRemoteAddress(),
+                'USER_AGENT' => $request->getUserAgent(),
+            ]);
 
-            if ($value === null) {
-                continue;
+            if ($result->isSuccess() === false) {
+                throw new FormResultSavingException(implode(', ', $result->getErrorMessages()));
             }
 
-            FormResultValuesTable::add([
-                'RESULT_ID' => $id,
-                'CODE' => $field->getCode(),
-                'LABEL' => $field->getLabel(),
-                'VALUE' => $value,
-            ]);
+            $id = $result->getId();
+
+            foreach ($this->fields as $field) {
+                $code = $field->getCode();
+                $value = $values[$code] ?? null;
+
+                if (empty($value) && $field->isRequired() === false) {
+                    continue;
+                }
+
+                $resValue = FormResultValuesTable::add([
+                    'RESULT_ID' => $id,
+                    'CODE' => $code,
+                    'LABEL' => $field->getLabel(),
+                    'VALUE' => (string)$value,
+                ]);
+
+                if ($resValue->isSuccess() === false) {
+                    throw new FormResultSavingException(implode(', ', $result->getErrorMessages()));
+                }
+
+                $connection->commitTransaction();
+
+                return true;
+            }
+        } catch (FormResultValuesTable $exception) {
+            $connection->rollbackTransaction();
+            throw $exception;
         }
 
-        return true;
+        return false;
     }
 
     public function getId(): string
