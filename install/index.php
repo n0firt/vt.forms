@@ -2,8 +2,8 @@
 
 use Bitrix\Main\Application;
 use Bitrix\Main\Loader;
-use vt\forms\Model\FormResultTable;
-use vt\forms\Model\FormResultValuesTable;
+use Vt\Forms\Model\FormResultTable;
+use Vt\Forms\Model\FormResultValuesTable;
 
 class vt_forms extends CModule
 {

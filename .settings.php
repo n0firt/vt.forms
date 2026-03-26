@@ -1,3 +1,10 @@
 <?php
 
-return [];
+return [
+    'controllers' => [
+        'value' => [
+            'defaultNamespace' => 'Vt\\Forms\\Controller'
+        ],
+        'readOnly' => true
+    ]
+];

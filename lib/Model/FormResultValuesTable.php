@@ -1,6 +1,6 @@
 <?
 
-namespace vt\forms\Model;
+namespace Vt\Forms\Model;
 
 use Bitrix\Main\ORM\Data\DataManager;
 use Bitrix\Main\ORM\Fields\IntegerField;

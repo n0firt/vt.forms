@@ -1,8 +1,8 @@
 <?php
 
-namespace vt\forms\Base;
+namespace Vt\Forms\Base;
 
-use vt\forms\Base\Fields\Field;
+use Vt\Forms\Base\Fields\Field;
 
 class Form
 {

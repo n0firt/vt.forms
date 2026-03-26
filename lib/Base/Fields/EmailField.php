@@ -1,6 +1,6 @@
 <?php
 
-namespace vt\forms\Base\Fields;
+namespace Vt\Forms\Base\Fields;
 
 class EmailField extends Field
 {

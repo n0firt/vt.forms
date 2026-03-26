@@ -1,6 +1,6 @@
 <?php
 
-namespace vt\forms\Base\DTO;
+namespace Vt\Forms\Base\DTO;
 
 class FieldContext
 {
