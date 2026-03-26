@@ -1,18 +1,13 @@
 <?php
 
+namespace Vt\Forms\Service;
+
 use Vt\Forms\Base\Form;
 use Vt\Forms\Exception\FormNotFoundException;
 
 class FormRepository
 {
     private array $forms = [];
-
-    public function __construct(Form ...$forms)
-    {
-        foreach ($forms as $form) {
-            $this->add($form);
-        }
-    }
 
     public function add(Form $form): void
     {

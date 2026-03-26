@@ -4,7 +4,7 @@ namespace Vt\Forms\Base\Fields;
 
 use Vt\Forms\Base\Dto\FieldDto;
 
-class PhoneField extends Field
+class TextField extends Field
 {
     protected bool $isTextArea;
 
