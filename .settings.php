@@ -52,7 +52,7 @@ return [
                                 new FieldDto(
                                     'message',
                                     'Сообщение',
-                                    $isTextArea = true
+                                    isTextArea: true
                                 )
                             )
                         )
