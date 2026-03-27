@@ -1,6 +1,7 @@
 <?php
 
 use Bitrix\Main\Application;
+use Bitrix\Main\Entity\Event;
 use Bitrix\Main\IO\Directory;
 use Bitrix\Main\IO\File;
 use Bitrix\Main\Loader;
@@ -8,6 +9,8 @@ use Bitrix\Main\EventManager;
 use Vt\Forms\Model\FormResultTable;
 use Vt\Forms\Model\FormResultValuesTable;
 use Vt\Forms\EventHandler;
+use Vt\Forms\Integration\RestDispatcher;
+use Vt\Forms\Model\RestQueueTable;
 
 class vt_forms extends CModule
 {
@@ -54,6 +57,7 @@ class vt_forms extends CModule
 
         FormResultTable::getEntity()->createDbTable();
         FormResultValuesTable::getEntity()->createDbTable();
+        RestQueueTable::getEntity()->createDbTable();
 
         return true;
     }
@@ -68,6 +72,7 @@ class vt_forms extends CModule
         $tableNames = [
             FormResultTable::getEntity()->getDBTableName(),
             FormResultValuesTable::getEntity()->getDBTableName(),
+            RestQueueTable::getEntity()->getDBTableName(),
         ];
 
         foreach ($tableNames as $tableName) {
@@ -99,6 +104,38 @@ class vt_forms extends CModule
             'OnHitController'
         );
 
+        $eventManager->registerEventHandler(
+            'vt.forms',
+            'OnAfterAddFormResult',
+            $this->MODULE_ID,
+            RestDispatcher::class,
+            'OnAfterAddFormResult'
+        );
+
+        $eventManager->registerEventHandler(
+            'vt.forms',
+            'OnBeforeRestSent',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnBeforeRestSent'
+        );
+
+        $eventManager->registerEventHandler(
+            'vt.forms',
+            'OnRestSuccess',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnRestSuccess'
+        );
+
+        $eventManager->registerEventHandler(
+            'vt.forms',
+            'OnRestError',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnRestError'
+        );
+
         return true;
     }
 
@@ -120,6 +157,38 @@ class vt_forms extends CModule
             $this->MODULE_ID,
             EventHandler::class,
             'OnHitController'
+        );
+
+        $eventManager->unRegisterEventHandler(
+            'vt.forms',
+            'OnAfterAddFormResult',
+            $this->MODULE_ID,
+            RestDispatcher::class,
+            'OnAfterAddFormResult'
+        );
+
+        $eventManager->unRegisterEventHandler(
+            'vt.forms',
+            'OnBeforeRestSent',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnBeforeRestSent'
+        );
+
+        $eventManager->unRegisterEventHandler(
+            'vt.forms',
+            'OnRestSuccess',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnRestSuccess'
+        );
+
+        $eventManager->unRegisterEventHandler(
+            'vt.forms',
+            'OnRestError',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnRestError'
         );
 
         return true;

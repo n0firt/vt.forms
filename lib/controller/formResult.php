@@ -26,7 +26,7 @@ class FormResult extends Controller
         $formId = HtmlFilter::encode($formId);
 
         foreach ($values as $key => $value) {
-            $fields[$key] = HtmlFilter::encode($value);
+            $values[$key] = HtmlFilter::encode($value);
         }
 
         $event = new \Bitrix\Main\Event("vt.forms", "OnHitController", [

@@ -58,25 +58,23 @@ class Form
                 ]);
 
                 if ($resValue->isSuccess() === false) {
-                    throw new FormResultSavingException(implode(', ', $result->getErrorMessages()));
+                    throw new FormResultSavingException(implode(', ', $resValue->getErrorMessages()));
                 }
             }
 
             $connection->commitTransaction();
-
-            $event = new \Bitrix\Main\Event("vt.forms", "OnAfterAddFormResult", [
-                'FORM_ID' => $this->id,
-                'RESULT_ID' => $id
-            ]);
-            $event->send();
-
-            return true;
         } catch (FormResultSavingException $exception) {
             $connection->rollbackTransaction();
             throw $exception;
         }
 
-        return false;
+        $event = new \Bitrix\Main\Event("vt.forms", "OnAfterAddFormResult", [
+            'FORM_ID' => $this->id,
+            'RESULT_ID' => $id
+        ]);
+        $event->send();
+
+        return true;
     }
 
     public function getId(): string
