@@ -4,16 +4,18 @@ use Bitrix\Main\Application;
 use Bitrix\Main\IO\Directory;
 use Bitrix\Main\IO\File;
 use Bitrix\Main\Loader;
+use Bitrix\Main\EventManager;
 use Vt\Forms\Model\FormResultTable;
 use Vt\Forms\Model\FormResultValuesTable;
+use Vt\Forms\EventHandler;
 
 class vt_forms extends CModule
 {
     public function __construct()
     {
         $this->MODULE_ID = "vt.forms";
-        $this->MODULE_NAME = "ajax формы";
-        $this->MODULE_DESCRIPTION = "Комплексный модуль для работы с ajax формами";
+        $this->MODULE_NAME = "AJAX формы";
+        $this->MODULE_DESCRIPTION = "Комплексный модуль для работы с AJAX формами";
 
         $arModuleVersion = [];
         include __DIR__ . '/version.php';
@@ -79,11 +81,47 @@ class vt_forms extends CModule
 
     public function InstallEvents(): bool
     {
+        $eventManager = EventManager::getInstance();
+
+        $eventManager->registerEventHandler(
+            'vt.forms',
+            'OnAfterAddFormResult',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnAfterAddFormResult'
+        );
+
+        $eventManager->registerEventHandler(
+            'vt.forms',
+            'OnHitController',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnHitController'
+        );
+
         return true;
     }
 
     public function UnInstallEvents(): bool
     {
+        $eventManager = EventManager::getInstance();
+
+        $eventManager->unRegisterEventHandler(
+            'vt.forms',
+            'OnAfterAddFormResult',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnAfterAddFormResult'
+        );
+
+        $eventManager->unRegisterEventHandler(
+            'vt.forms',
+            'OnHitController',
+            $this->MODULE_ID,
+            EventHandler::class,
+            'OnHitController'
+        );
+
         return true;
     }
 

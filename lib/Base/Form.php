@@ -64,6 +64,12 @@ class Form
 
             $connection->commitTransaction();
 
+            $event = new \Bitrix\Main\Event("vt.forms", "OnAfterAddFormResult", [
+                'FORM_ID' => $this->id,
+                'RESULT_ID' => $id
+            ]);
+            $event->send();
+
             return true;
         } catch (FormResultSavingException $exception) {
             $connection->rollbackTransaction();

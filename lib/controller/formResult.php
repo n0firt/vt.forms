@@ -29,6 +29,12 @@ class FormResult extends Controller
             $fields[$key] = HtmlFilter::encode($value);
         }
 
+        $event = new \Bitrix\Main\Event("vt.forms", "OnHitController", [
+            'FORM_ID' => $formId,
+            'VALUES' => $values,
+        ]);
+        $event->send();
+
         $serviceLocator = ServiceLocator::getInstance();
 
         /* @var $formsRepository \Vt\Forms\Service\FormRepository */

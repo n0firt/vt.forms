@@ -5,6 +5,7 @@ use Vt\Forms\Base\Fields\EmailField;
 use Vt\Forms\Base\Fields\PhoneField;
 use Vt\Forms\Base\Fields\TextField;
 use Vt\Forms\Base\Form;
+use Vt\Forms\CustomFormatter;
 
 return [
     'components' => [
@@ -60,6 +61,14 @@ return [
 
                     return $repository;
                 }
+            ],
+            'vt.forms.logger' => [
+                'constructor' => static function () {
+                    $logger = new \Bitrix\Main\Diag\FileLogger($_SERVER['DOCUMENT_ROOT'] . '/local/modules/vt.forms/log.txt');
+                    $logger->setFormatter(new CustomFormatter());
+
+                    return $logger;
+                },
             ]
         ]
     ]
