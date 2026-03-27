@@ -2,6 +2,7 @@
 
 use Bitrix\Main\Application;
 use Bitrix\Main\IO\Directory;
+use Bitrix\Main\IO\File;
 use Bitrix\Main\Loader;
 use Vt\Forms\Model\FormResultTable;
 use Vt\Forms\Model\FormResultValuesTable;
@@ -96,6 +97,11 @@ class vt_forms extends CModule
             }
         });
 
+        $adminSource = __DIR__ . '/admin';
+        if (Directory::isDirectoryExists($adminSource)) {
+            CopyDirFiles($adminSource, $root . '/bitrix/admin', true, true);
+        }
+
         return true;
     }
 
@@ -110,6 +116,19 @@ class vt_forms extends CModule
         });
 
         $this->cleanUpVendorDirectory($root . '/local/components/vt');
+
+        $adminSource = __DIR__ . '/admin';
+        if (Directory::isDirectoryExists($adminSource)) {
+            $dir = new Directory($adminSource);
+            foreach ($dir->getChildren() as $file) {
+                if ($file->isFile()) {
+                    $targetFile = $root . '/bitrix/admin/' . $file->getName();
+                    if (File::isFileExists($targetFile)) {
+                        File::deleteFile($targetFile);
+                    }
+                }
+            }
+        }
 
         return true;
     }

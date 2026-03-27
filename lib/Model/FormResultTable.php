@@ -45,7 +45,7 @@ class FormResultTable extends DataManager
             new OneToMany(
                 'VALUES',
                 FormResultValuesTable::class,
-                'RESULT_ID'
+                'RESULT'
             )
         ];
     }

@@ -23,44 +23,65 @@ return [
         'value' => [
             'vt.forms.repository' => [
                 'constructor' => static function () {
-                    $repository = new \Vt\Forms\Service\FormRepository();
-
-                    $repository->add(
-                        new Form(
-                            'request',
-                            new TextField(
-                                new FieldDto(
-                                    'NAME',
-                                    'Имя',
-                                    false
-                                )
-                            ),
-                            new PhoneField(
-                                new FieldDto(
-                                    'PHONE',
-                                    'Телефон',
-                                    true
-                                )
-                            ),
-                            new EmailField(
-                                new FieldDto(
-                                    'EMAIL',
-                                    'Email',
-                                    true
-                                )
-                            ),
-                            new TextField(
-                                new FieldDto(
-                                    'MESSAGE',
-                                    'Комментарий',
-                                    true,
-                                    isTextArea: true
-                                )
+                    $requestForm = new Form(
+                        'request',
+                        new TextField(
+                            new FieldDto(
+                                'NAME',
+                                'Имя',
+                                false
+                            )
+                        ),
+                        new PhoneField(
+                            new FieldDto(
+                                'PHONE',
+                                'Телефон',
+                                true
+                            )
+                        ),
+                        new EmailField(
+                            new FieldDto(
+                                'EMAIL',
+                                'Email',
+                                true
+                            )
+                        ),
+                        new TextField(
+                            new FieldDto(
+                                'MESSAGE',
+                                'Комментарий',
+                                true,
+                                isTextArea: true
                             )
                         )
                     );
 
-                    return $repository;
+                    $callbackForm = new Form(
+                        'callback',
+                        new TextField(
+                            new FieldDto(
+                                'NAME',
+                                'Имя',
+                                false
+                            )
+                        ),
+                        new PhoneField(
+                            new FieldDto(
+                                'PHONE',
+                                'Телефон',
+                                true
+                            )
+                        ),
+                        new EmailField(
+                            new FieldDto(
+                                'EMAIL',
+                                'Email',
+                                false
+                            )
+                        )
+                    );
+
+                    return new \Vt\Forms\Service\FormRepository($requestForm, $callbackForm);
                 }
             ]
         ]
